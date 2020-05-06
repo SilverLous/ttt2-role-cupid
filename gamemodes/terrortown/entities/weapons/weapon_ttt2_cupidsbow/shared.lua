@@ -161,6 +161,7 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 		v.inLove = false
 	end
 	lovedones = {}
+	m_bApplyingDamage = false
 	hook.Remove("HUDPaint", "HUDPaint_DrawABox")
 	hook.Remove("PreDrawHalos", "loversHalo")
 	hook.Remove("TTTRenderEntityInfo", "ttt2_marker_highlight_players")
@@ -193,11 +194,16 @@ net.Receive("Lovedones", function()
 					local attacker = dmginfo:GetAttacker()
 					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
 					local damage = dmginfo:GetDamage()
-					if ply==lovedones[1] or ply==lovedones[2] then
-						lovedones[1]:TakeDamage(damage*0.5)
-						lovedones[2]:TakeDamage(damage*0.5)
-						dmginfo:ScaleDamage(0)
-						return
+					if ply.inLove then
+						if ( not m_bApplyingDamage ) then
+							m_bApplyingDamage = true
+							dmginfo:SetDamage(dmginfo:GetDamage() / 2)
+							lovedones[1]:TakeDamageInfo( dmginfo )
+							lovedones[2]:TakeDamageInfo( dmginfo )
+							dmginfo:ScaleDamage(0)
+							m_bApplyingDamage = false
+							return
+						end
 					end
 				end)
 			end

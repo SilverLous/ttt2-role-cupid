@@ -13,21 +13,19 @@ function ROLE:PreInitialize()
 	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
 	self.scoreKillsMultiplier = 2 -- multiplier for kill of player of another team
 	self.scoreTeamKillsMultiplier = -16 -- multiplier for teamkill
-	self.preventFindCredits = false
+	self.preventFindCredits = true
 	self.preventKillCredits = true
-	self.preventTraitorAloneCredits = false
+	self.preventTraitorAloneCredits = true
 	self.unknownTeam = true
 	self.defaultTeam = TEAM_INNOCENT
 	self.fallbackTable = {}
-	self.shopfallback = {ROLE_CUPID}
 	self.conVarData = {
 		pct = 0.15, -- necessary: percentage of getting this role selected (per player)
 		maximum = 1, -- maximum amount of roles in a round
-		credits = 1,
 		credits_starting = 1,
-		minPlayers = 2, -- minimum amount of players until this role is able to get selected
+		minPlayers = 6, -- minimum amount of players until this role is able to get selected
 		togglable = true, -- option to toggle a role for a client if possible (F1 menu)
-		random = 100
+		random = 33
 	}
 end
 
