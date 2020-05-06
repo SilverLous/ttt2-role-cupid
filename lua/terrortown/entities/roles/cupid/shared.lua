@@ -2,7 +2,8 @@ AddCSLuaFile()
 
 if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
-	--include("terrortown/entities/weapons/weapon_ttt2_cupidsbow")
+	CreateConVar("ttt_cupid_buyalbe_cupidscard", 1, {FCVAR_ARCHIVE}, "",0,1)
+	CreateConVar("ttt_cupid_buyalbe_cupidscrossbow", 0, {FCVAR_ARCHIVE}, "",0,1)
 end
 
 function ROLE:PreInitialize()
@@ -11,21 +12,34 @@ function ROLE:PreInitialize()
 	self.abbr = 'cup'
 	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
 	self.scoreKillsMultiplier = 2 -- multiplier for kill of player of another team
-	self.scoreTeamKillsMultiplier = -32 -- multiplier for teamkill
-	self.preventFindCredits = true
+	self.scoreTeamKillsMultiplier = -16 -- multiplier for teamkill
+	self.preventFindCredits = false
 	self.preventKillCredits = true
-	self.preventTraitorAloneCredits = true
+	self.preventTraitorAloneCredits = false
 	self.unknownTeam = true
 	self.defaultTeam = TEAM_INNOCENT
-
+	self.defaultEquipment = SPECIAL_EQUIPMENT
+	self.fallbackTable = {{id = "weapon_ttt2_cupidsbow"}}
+	--if GetConVar("ttt_cupid_buyalbe_cupidscard"):GetBool() then
+	--	table.insert(self.fallbackTable, {id = "weapon_ttt2_cupidsbow"})
+	--end]]]
 	self.conVarData = {
 		pct = 0.15, -- necessary: percentage of getting this role selected (per player)
 		maximum = 1, -- maximum amount of roles in a round
-		minPlayers = 6, -- minimum amount of players until this role is able to get selected
+		credits = 1,
+		minPlayers = 2, -- minimum amount of players until this role is able to get selected
 		togglable = true, -- option to toggle a role for a client if possible (F1 menu)
-		random = 33
+		random = 100
 	}
 end
+
+
+-- init cupid fallback table
+hook.Add("InitFallbackShops", "CupidInitFallback", function()
+	-- init fallback shop
+	print(table.ToString(TRAITOR.fallbackTable))
+	InitFallbackShop(CUPID,CUPID.fallbackTable) -- merge jackal equipment with traitor equipment
+end)
 
 roles.InitCustomTeam(ROLE.name, { -- this creates the var "TEAM_CUPID"
 		icon = "vgui/ttt/dynamic/roles/icon_lov",

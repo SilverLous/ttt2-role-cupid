@@ -7,11 +7,14 @@ if SERVER then
     
 end
 
+SWEP.PrintName = "Cupids Bow"
+SWEP.Slot = 6
+SWEP.Icon="vgui/ttt/commie_bomb.png"
+SWEP.EquipMenuData = {
+	type = "Weapon",
+	desc = "Sacrifice yourself for the greater good."
+}
 
-if CLIENT then
-	SWEP.PrintName = "Cupids Bow"
-	SWEP.Slot = 6
-end
 SWEP.LoadoutFor = {ROLE_CUPID}
 SWEP.HoldType = "normal"
 SWEP.Base = "weapon_tttbase"
@@ -24,6 +27,7 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 120
 SWEP.ViewModel = Model("models/weapons/cstrike/c_c4.mdl")
 SWEP.WorldModel = Model("models/weapons/w_c4.mdl")
+SWEP.CanBuy = { ROLE_CUPID }
 
 SWEP.DrawCrosshair = false
 SWEP.ViewModelFlip = false
