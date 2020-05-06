@@ -4,17 +4,12 @@ if SERVER then
 	util.AddNetworkString("inLove")
 	util.AddNetworkString("deathPopup")
 	--AddCSLuaFile("Armor.lua")
-    
+else
+	SWEP.PrintName = "Cupid's bow"
+	SWEP.Author = "SilverLous"
+
+	SWEP.Slot = 7
 end
-
-SWEP.PrintName = "Cupids Bow"
-SWEP.Slot = 6
-SWEP.Icon="vgui/ttt/commie_bomb.png"
-SWEP.EquipMenuData = {
-	type = "Weapon",
-	desc = "Sacrifice yourself for the greater good."
-}
-
 SWEP.LoadoutFor = {ROLE_CUPID}
 SWEP.HoldType = "normal"
 SWEP.Base = "weapon_tttbase"
@@ -79,16 +74,6 @@ function SWEP:CreateGUI()
 		local plys = player.GetAll()
 		local value = ply:Name()
 
-		if ply.df_bodyname and player.GetByUniqueID(ply.df_bodyname) then
-			value = player.GetByUniqueID(ply.df_bodyname):Name()
-		end
-
-		NameComboBox.OnSelect = function(panel, index, _, data)
-			RunConsoleCommand("ttt_df_select_player", data)
-
-			ply.df_bodyname = data
-		end
-
 		local DLabel2 = vgui.Create("DLabel", Panel)
 		DLabel2:SetPos(10, 95)
 		DLabel2:SetSize(100, 20)
@@ -111,10 +96,6 @@ function SWEP:CreateGUI()
 		FinishButton:SetText("Finish")
 
 		local data = 1
-
-		if ply.df_role then
-			data = ply.df_role
-		end
 		
 		self.GUI = Panel
 
@@ -183,7 +164,7 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	hook.Remove("HUDPaint", "HUDPaint_DrawABox")
 	hook.Remove("PreDrawHalos", "loversHalo")
 	hook.Remove("TTTRenderEntityInfo", "ttt2_marker_highlight_players")
-	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
+	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScalingBow') end
 end)
 
 
@@ -206,8 +187,8 @@ net.Receive("Lovedones", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if SERVER then
-			if GetConVar("ttt_cupid_damage_split_enabled")==1 then
-				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
+			if GetConVar("ttt_cupid_damage_split_enabled"):GetBool()==true then		
+				hook.Add('EntityTakeDamage', 'LoversDamageScalingBow', function(ply, dmginfo)
 					if GetRoundState() ~= ROUND_ACTIVE then return end
 					local attacker = dmginfo:GetAttacker()
 					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
