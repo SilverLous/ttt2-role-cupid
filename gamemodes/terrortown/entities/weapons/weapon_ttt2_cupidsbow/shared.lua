@@ -164,11 +164,7 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	hook.Remove("HUDPaint", "HUDPaint_DrawABox")
 	hook.Remove("PreDrawHalos", "loversHalo")
 	hook.Remove("TTTRenderEntityInfo", "ttt2_marker_highlight_players")
-<<<<<<< HEAD
-	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
-=======
 	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScalingBow') end
->>>>>>> experimental
 end)
 
 
@@ -191,13 +187,8 @@ net.Receive("Lovedones", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if SERVER then
-<<<<<<< HEAD
-			if GetConVar("ttt_cupid_damage_split_enabled")==1 then
-				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
-=======
 			if GetConVar("ttt_cupid_damage_split_enabled"):GetBool()==true then		
 				hook.Add('EntityTakeDamage', 'LoversDamageScalingBow', function(ply, dmginfo)
->>>>>>> experimental
 					if GetRoundState() ~= ROUND_ACTIVE then return end
 					local attacker = dmginfo:GetAttacker()
 					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
