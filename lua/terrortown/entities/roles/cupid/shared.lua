@@ -18,7 +18,6 @@ function ROLE:PreInitialize()
 	self.preventTraitorAloneCredits = true
 	self.unknownTeam = true
 	self.defaultTeam = TEAM_INNOCENT
-	self.fallbackTable = {}
 	self.conVarData = {
 		pct = 0.15, -- necessary: percentage of getting this role selected (per player)
 		maximum = 1, -- maximum amount of roles in a round
