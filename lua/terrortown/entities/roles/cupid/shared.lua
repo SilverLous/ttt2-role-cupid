@@ -4,6 +4,7 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
 	CreateConVar("ttt_cupid_buyalbe_cupidscard", 1, {FCVAR_ARCHIVE}, "",0,1)
 	CreateConVar("ttt_cupid_buyalbe_cupidscrossbow", 0, {FCVAR_ARCHIVE}, "",0,1)
+	CreateConVar('ttt_cupid_damage_split_enabled', 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 end
 
 function ROLE:PreInitialize()
@@ -19,10 +20,11 @@ function ROLE:PreInitialize()
 	self.unknownTeam = true
 	self.defaultTeam = TEAM_INNOCENT
 	self.defaultEquipment = SPECIAL_EQUIPMENT
-	self.fallbackTable = {{id = "weapon_ttt2_cupidsbow"}}
-	--if GetConVar("ttt_cupid_buyalbe_cupidscard"):GetBool() then
-	--	table.insert(self.fallbackTable, {id = "weapon_ttt2_cupidsbow"})
-	--end]]]
+	self.fallbackTable = {}
+	self.shopfallback = {ROLE_CUPID}
+	if GetConVar("ttt_cupid_buyalbe_cupidscard"):GetBool() then
+		table.insert(self.fallbackTable, {id = "weapon_ttt2_cupidsbow",material="",credits=1})
+	end
 	self.conVarData = {
 		pct = 0.15, -- necessary: percentage of getting this role selected (per player)
 		maximum = 1, -- maximum amount of roles in a round
@@ -37,7 +39,7 @@ end
 -- init cupid fallback table
 hook.Add("InitFallbackShops", "CupidInitFallback", function()
 	-- init fallback shop
-	print(table.ToString(TRAITOR.fallbackTable))
+	print(table.ToString(CUPID.fallbackTable))
 	InitFallbackShop(CUPID,CUPID.fallbackTable) -- merge jackal equipment with traitor equipment
 end)
 

@@ -119,7 +119,7 @@ function SWEP:CreateGUI()
 		self.GUI = Panel
 
 		function FinishButton:DoClick()
-			if NameComboBox:GetSelected()==nil && NameComboBox2:GetSelected()==nil then return true end	
+			if NameComboBox:GetSelected()==nil or NameComboBox2:GetSelected()==nil then return true end	
 			if NameComboBox:GetSelected()== NameComboBox2:GetSelected() then return true end
 			for i = 1, #plys do
 				if plys[i]:Name() == NameComboBox:GetSelected() then lovedOnesArmor[1]=plys[i] end
@@ -183,6 +183,7 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	hook.Remove("HUDPaint", "HUDPaint_DrawABox")
 	hook.Remove("PreDrawHalos", "loversHalo")
 	hook.Remove("TTTRenderEntityInfo", "ttt2_marker_highlight_players")
+	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
 end)
 
 
@@ -205,6 +206,20 @@ net.Receive("Lovedones", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if SERVER then
+			if GetConVar("ttt_cupid_damage_split_enabled")==1 then
+				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
+					if GetRoundState() ~= ROUND_ACTIVE then return end
+					local attacker = dmginfo:GetAttacker()
+					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
+					local damage = dmginfo:GetDamage()
+					if ply==lovedones[1] or ply==lovedones[2] then
+						lovedones[1]:TakeDamage(damage*0.5)
+						lovedones[2]:TakeDamage(damage*0.5)
+						dmginfo:ScaleDamage(0)
+						return
+					end
+				end)
+			end
 			lovedones[3]:StripWeapon("weapon_ttt2_cupidsbow")
 		end
 	end
