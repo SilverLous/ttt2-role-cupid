@@ -4,6 +4,7 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
 	CreateConVar('ttt_cupid_damage_split_enabled', 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 	CreateConVar('ttt_cupid_old_weapon', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+	CreateConVar('ttt_cupid_forced_selflove', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 end
 
 function ROLE:PreInitialize()

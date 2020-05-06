@@ -65,14 +65,17 @@ function SWEP:PrimaryAttack()
 				LANG.GetTranslation("crossBow_text"),
 				6
 				)
+				if GetConVar("ttt_cupid_forced_selflove"):GetBool() then
+					net.Start("Lovedones")
+						net.WriteTable({tempOwner,lover1,tempOwner})
+					net.SendToServer()
+				end
 			end
 			self.CanAimSelf = true
 		else
-			print("First")
 			if lover1 ~= trace && CLIENT && LocalPlayer()==tempOwner then
 				LocalPlayer():GetActiveWeapon():ShootEffects()
 				LocalPlayer():GetActiveWeapon():ShootBullet(0,10, 1)
-				print(trace:Nick(),lover1:Nick())
 				net.Start("Lovedones")
 					net.WriteTable({trace,lover1,tempOwner})
 				net.SendToServer()
