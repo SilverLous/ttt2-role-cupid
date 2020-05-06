@@ -2,7 +2,8 @@ AddCSLuaFile()
 
 if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
-	--include("terrortown/entities/weapons/weapon_ttt2_cupidsbow")
+	CreateConVar('ttt_cupid_damage_split_enabled', 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+	CreateConVar('ttt_cupid_old_weapon', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 end
 
 function ROLE:PreInitialize()
@@ -11,19 +12,22 @@ function ROLE:PreInitialize()
 	self.abbr = 'cup'
 	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
 	self.scoreKillsMultiplier = 2 -- multiplier for kill of player of another team
-	self.scoreTeamKillsMultiplier = -32 -- multiplier for teamkill
-	self.preventFindCredits = true
+	self.scoreTeamKillsMultiplier = -16 -- multiplier for teamkill
+	self.preventFindCredits = false
 	self.preventKillCredits = true
-	self.preventTraitorAloneCredits = true
+	self.preventTraitorAloneCredits = false
 	self.unknownTeam = true
 	self.defaultTeam = TEAM_INNOCENT
-
+	self.fallbackTable = {}
+	self.shopfallback = {ROLE_CUPID}
 	self.conVarData = {
 		pct = 0.15, -- necessary: percentage of getting this role selected (per player)
 		maximum = 1, -- maximum amount of roles in a round
-		minPlayers = 6, -- minimum amount of players until this role is able to get selected
+		credits = 1,
+		credits_starting = 1,
+		minPlayers = 2, -- minimum amount of players until this role is able to get selected
 		togglable = true, -- option to toggle a role for a client if possible (F1 menu)
-		random = 33
+		random = 100
 	}
 end
 
@@ -35,10 +39,18 @@ roles.InitCustomTeam(ROLE.name, { -- this creates the var "TEAM_CUPID"
 if SERVER then
 	-- Give Loadout on respawn and rolechange
 	function ROLE:GiveRoleLoadout(ply, isRoleChange)
-		ply:GiveEquipmentWeapon("weapon_ttt2_cupidsbow")
+		if GetConVar("ttt_cupid_old_weapon"):GetBool() then
+			ply:GiveEquipmentWeapon("weapon_ttt2_cupidsbow")
+		else
+			ply:GiveEquipmentWeapon("weapon_ttt2_cupidscrossbow")
+		end
 	end
 	function ROLE:RemoveRoleLoadout(ply, isRoleChange)
-		ply:StripWeapon("weapon_ttt2_cupidsbow")
+		if GetConVar("ttt_cupid_old_weapon"):GetBool() then
+			ply:StripWeapon("weapon_ttt2_cupidsbow")
+		else
+			ply:StripWeapon("weapon_ttt2_cupidscrossbow")
+		end
 	end
 end
 
