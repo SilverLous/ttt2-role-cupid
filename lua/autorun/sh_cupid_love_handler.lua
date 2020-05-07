@@ -60,9 +60,12 @@ net.Receive("Lovedones", function()
             
             if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
                 lovedones[3]:UpdateTeam(TEAM_CUPID)
-            end
-            SendFullStateUpdate()
-        end
+            end            
+		end
+		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
+			lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
+		end
+		SendFullStateUpdate()
 		net.Start("inLove")
 			net.WriteTable({lovedones[1],lovedones[2]})
 		net.Send({lovedones[1],lovedones[2]})
