@@ -1,6 +1,8 @@
 CreateConVar('ttt_cupid_damage_split_enabled', 1, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 CreateConVar('ttt_cupid_old_weapon', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 CreateConVar('ttt_cupid_forced_selflove', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar('ttt_cupid_lovers_force_own_team', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
+CreateConVar('ttt_cupid_joins_team_lovers', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 
 
 hook.Add("TTTUlxDynamicRCVars", "ttt2_ulx_dynamic_cupid_convars", function(tbl)
@@ -17,5 +19,13 @@ hook.Add("TTTUlxDynamicRCVars", "ttt2_ulx_dynamic_cupid_convars", function(tbl)
 	-- Implementing a ConVar that decides if Cupid has to choose himself.
 
     table.insert(tbl[ROLE_CUPID], {cvar = "ttt_cupid_forced_selflove", checkbox = true, min = 0, max = 1, decimal = 0, desc = "ttt_cupid_forced_selflove (def. 0)"})
+    
+	-- Implementing a ConVar that decides if Lovers will always join a new team.
+
+    table.insert(tbl[ROLE_CUPID], {cvar = "ttt_cupid_lovers_force_own_team", checkbox = true, min = 0, max = 1, decimal = 0, desc = "ttt_cupid_lovers_force_own_team (def. 0)"})
+
+	-- Implementing a ConVar that forces Cupid and both Lovers to be in their own team.
+
+    table.insert(tbl[ROLE_CUPID], {cvar = "ttt_cupid_joins_team_lovers", checkbox = true, min = 0, max = 1, decimal = 0, desc = "ttt_cupid_joins_team_lovers (def. 0)"})
     
 end)
