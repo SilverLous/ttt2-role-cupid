@@ -78,7 +78,7 @@ net.Receive("Lovedones", function()
 					local attacker = dmginfo:GetAttacker()
 					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
 					local damage = dmginfo:GetDamage()
-					if ply.inLove then
+					if ply.inLove or (ply:GetRole()==ROLE_CUPID and GetConVar("ttt_cupid_joins_team_lovers"):GetBool()) then
 						if ( not m_bApplyingDamage and GetConVar("ttt_cupid_joins_team_lovers"):GetBool() and lovedones[1]~=lovedones[3] and lovedones[2]~=lovedones[3] ) then
 							m_bApplyingDamage = true
 							dmginfo:SetDamage(dmginfo:GetDamage() / 3)
