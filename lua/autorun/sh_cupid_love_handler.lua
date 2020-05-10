@@ -2,10 +2,17 @@
 lovedones = {}
 someoneDied = false
 
+DebugCupidTest = GetConVar("ttt_cupid_DEBUG"):GetBool()
+function debugText(text)
+	if DebugCupidTest then
+		print("\n"..text.."\n")
+	end
+end
+
 hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 	someoneDied = true	
 	if SERVER then
-				
+		debugText("Player Death hook started")
 		if lovedones[1] == player and player.inLove then
 			LANG.Msg(player, "deathPopup_title")
 			net.Start("deathPopup")
@@ -25,7 +32,8 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 	end
 end)	
 
-hook.Add("TTTPrepareRound","reseeeettime",function()		
+hook.Add("TTTPrepareRound","reseeeettime",function()	
+	debugText("Reset Works")	
 	someoneDied = false
 	lover1 = ""
 	if lovedones[1]!=nil then
@@ -48,6 +56,7 @@ end)
 
 net.Receive("Lovedones", function()	
 	lovedones = net.ReadTable()
+	debugText("Falling in Love starts")
 	if someoneDied then		
 		if SERVER then
 			lovedones[3]:StripWeapon("weapon_ttt2_cupidscrossbow")
@@ -73,6 +82,7 @@ net.Receive("Lovedones", function()
 		lovedones[2].inLove = true
 		if SERVER then
 			if GetConVar("ttt_cupid_damage_split_enabled"):GetBool()==true then
+				debugText("Damage Split starts")
 				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
 					if GetRoundState() ~= ROUND_ACTIVE then return end
 					local attacker = dmginfo:GetAttacker()
@@ -98,6 +108,7 @@ net.Receive("Lovedones", function()
 
 end)
 net.Receive("inLove", function()
+	debugText("Falling in Love Client Side starts")
 	if CLIENT then
 		lovedones = net.ReadTable()
 		lovedones[1].inLove = true
@@ -139,7 +150,9 @@ net.Receive("inLove", function()
 end)
 
 net.Receive("deathPopup", function()
+	debugText("Death Popup starts")
 	if CLIENT then
+
 		deathtimer=CurTime()
 		EPOP:AddMessage(
 			{
