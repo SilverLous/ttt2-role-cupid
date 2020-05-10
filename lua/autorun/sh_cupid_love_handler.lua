@@ -2,9 +2,8 @@
 lovedones = {}
 someoneDied = false
 
-DebugCupidTest = GetConVar("ttt_cupid_DEBUG"):GetBool()
 function debugText(text)
-	if DebugCupidTest then
+	if GetConVar("ttt_cupid_DEBUG"):GetBool() then
 		print("\n"..text.."\n")
 	end
 end
