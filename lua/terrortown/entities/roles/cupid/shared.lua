@@ -1,8 +1,9 @@
 AddCSLuaFile()
 
+include("autorun/sh_cupid_love_handler.lua")
+
 if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
-	include("autorun/sh_cupid_love_handler.lua")
 	CreateConVar('ttt_cupid_DEBUG', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 end
 
