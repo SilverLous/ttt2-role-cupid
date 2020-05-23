@@ -1,11 +1,11 @@
 AddCSLuaFile()
 
-include("autorun/sh_cupid_love_handler.lua")
 
 if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_cup.vmt")
-	CreateConVar('ttt_cupid_DEBUG', 0, {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 end
+
+include("autorun/sh_cupid_love_handler.lua")
 
 function ROLE:PreInitialize()
 	self.index = ROLE_CUPID
