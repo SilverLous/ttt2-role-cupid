@@ -39,6 +39,7 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	hook.Remove("HUDPaint", "HUDPaint_DrawABox")
 	hook.Remove("PreDrawHalos", "loversHalo")
 	hook.Remove("TTTRenderEntityInfo", "ttt2_marker_highlight_players")
+	hook.Remove("Tick", "Lovers_Heal_Share")
 	--self.CanAimSelf = false
 	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
 end)
@@ -75,7 +76,7 @@ net.Receive("Lovedones", function()
 				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
 					if GetRoundState() ~= ROUND_ACTIVE then return end
 					local attacker = dmginfo:GetAttacker()
-					if not IsValid(attacker) or not attacker:IsPlayer() then return end				
+					--if not IsValid(attacker) or not attacker:IsPlayer() then return end				
 					local damage = dmginfo:GetDamage()
 					if ply.inLove then
 						if ( not m_bApplyingDamage) then                            
@@ -87,6 +88,16 @@ net.Receive("Lovedones", function()
 							m_bApplyingDamage = false
 							return
                         end
+					end
+				end)			
+				hook.Add("Tick", "Lovers_Heal_Share",function()
+					if CurTime()%1 == 0 && lovedones[1]:Alive() && lovedones[2]:Alive() && lovedones[1]:Health() != lovedones[2]:Health() then 
+						healthDiff = lovedones[1]:Health()-lovedones[2]:Health()
+						if healthDiff>0 then
+							lovedones[2]:SetHealth(lovedones[1]:Health())
+						else
+							lovedones[1]:SetHealth(lovedones[2]:Health())
+						end
 					end
 				end)
 			end
