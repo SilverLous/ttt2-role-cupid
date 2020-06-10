@@ -56,19 +56,23 @@ net.Receive("Lovedones", function()
     else				
         if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
             lovedones[1]:UpdateTeam(TEAM_CUPID)
+            lovedones[1]:ChatPrint("You are now in Team Lovers")
             lovedones[2]:UpdateTeam(TEAM_CUPID)
+            lovedones[2]:ChatPrint("You are now in Team Lovers")
             
             if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
                 lovedones[3]:UpdateTeam(TEAM_CUPID)
+				lovedones[3]:ChatPrint("You are now in Team Lovers")
             end            
 		end
 		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
 			lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
+            lovedones[3]:ChatPrint("You are now in Team " .. tostring(lovedones[1]:GetTeam()))
 		end
 		SendFullStateUpdate()
 		net.Start("inLove")
-			net.WriteTable({lovedones[1],lovedones[2]})
-		net.Send({lovedones[1],lovedones[2]})
+			net.WriteTable({lovedones[1],lovedones[2],lovedones[3]})
+		net.Send({lovedones[1],lovedones[2],lovedones[3]})
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if SERVER then
@@ -113,14 +117,26 @@ net.Receive("inLove", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if  LocalPlayer() == lovedones[1] then Ply=lovedones[2] else Ply=lovedones[1] end
-		EPOP:AddMessage(
-			{
-			text = LANG.GetTranslation("inLovePop_title")..Ply:Nick(),
-			color = Color(255, 20, 147, 255)
-			},
-		LANG.GetTranslation("inLovePop_text")..LocalPlayer():GetTeam(),
-		6
-		)
+		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
+			EPOP:AddMessage(
+				{
+				text = LANG.GetTranslation("inLovePop_cup_title"),
+				color = Color(255, 20, 147, 255)
+				},
+			LANG.GetTranslation("inLovePop_cup_text")..LocalPlayer():GetTeam(),
+			6
+			)
+		else
+			EPOP:AddMessage(
+				{
+				text = LANG.GetTranslation("inLovePop_title")..Ply:Nick(),
+				color = Color(255, 20, 147, 255)
+				},
+			LANG.GetTranslation("inLovePop_text")..LocalPlayer():GetTeam(),
+			6
+			)
+		end
+		
 		hook.Add("PreDrawHalos", "loversHalo", function()
 			if Ply:Alive() then
 				outline.Add(Ply, Color(255, 20, 147, 255), OUTLINE_MODE_VISIBLE)
