@@ -117,50 +117,52 @@ net.Receive("inLove", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if  LocalPlayer() == lovedones[1] then Ply=lovedones[2] else Ply=lovedones[1] end
-		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
-			EPOP:AddMessage(
-				{
-				text = LANG.GetTranslation("inLovePop_cup_title"),
-				color = Color(255, 20, 147, 255)
-				},
-			LANG.GetTranslation("inLovePop_cup_text")..LocalPlayer():GetTeam(),
-			6
-			)
-		else
-			EPOP:AddMessage(
-				{
-				text = LANG.GetTranslation("inLovePop_title")..Ply:Nick(),
-				color = Color(255, 20, 147, 255)
-				},
-			LANG.GetTranslation("inLovePop_text")..LocalPlayer():GetTeam(),
-			6
-			)
-		end
-		
-		hook.Add("PreDrawHalos", "loversHalo", function()
-			if Ply:Alive() then
-				outline.Add(Ply, Color(255, 20, 147, 255), OUTLINE_MODE_VISIBLE)
+		if LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2] then
+			if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
+				EPOP:AddMessage(
+					{
+					text = LANG.GetTranslation("inLovePop_cup_title"),
+					color = Color(255, 20, 147, 255)
+					},
+				LANG.GetTranslation("inLovePop_cup_text")..LocalPlayer():GetTeam(),
+				6
+				)
+			else
+				EPOP:AddMessage(
+					{
+					text = LANG.GetTranslation("inLovePop_title")..Ply:Nick(),
+					color = Color(255, 20, 147, 255)
+					},
+				LANG.GetTranslation("inLovePop_text")..LocalPlayer():GetTeam(),
+				6
+				)
 			end
-		end)
-		hook.Add("TTTRenderEntityInfo", "ttt2_marker_highlight_players", function(tData)		
-			local ent = tData:GetEntity()		
-			-- has to be a player
-			if not ent:IsPlayer() then return end
 			
-			if not ent.inLove then return end
-		
-			if !LocalPlayer().inLove then return end
-		
-			tData:AddDescriptionLine(
-				LANG.GetTranslation("hoverLove"),
-				Color(255, 20, 147, 255)
-			)
-		
-			tData:AddIcon(
-				Material("vgui/ttt/dynamic/roles/icon_lov"),
-				Color(255, 20, 147, 255)
-			)
-		end)
+			hook.Add("PreDrawHalos", "loversHalo", function()
+				if Ply:Alive() then
+					outline.Add(Ply, Color(255, 20, 147, 255), OUTLINE_MODE_VISIBLE)
+				end
+			end)
+			hook.Add("TTTRenderEntityInfo", "ttt2_marker_highlight_players", function(tData)		
+				local ent = tData:GetEntity()		
+				-- has to be a player
+				if not ent:IsPlayer() then return end
+				
+				if not ent.inLove then return end
+			
+				if !LocalPlayer().inLove then return end
+			
+				tData:AddDescriptionLine(
+					LANG.GetTranslation("hoverLove"),
+					Color(255, 20, 147, 255)
+				)
+			
+				tData:AddIcon(
+					Material("vgui/ttt/dynamic/roles/icon_lov"),
+					Color(255, 20, 147, 255)
+				)
+			end)
+		end
 	end
 end)
 
