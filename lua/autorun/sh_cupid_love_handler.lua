@@ -59,6 +59,7 @@ net.Receive("Lovedones", function()
             lovedones[1]:ChatPrint("You are now in Team Lovers")
             lovedones[2]:UpdateTeam(TEAM_CUPID)
             lovedones[2]:ChatPrint("You are now in Team Lovers")
+			PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
             
             if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
                 lovedones[3]:UpdateTeam(TEAM_CUPID)
@@ -68,6 +69,7 @@ net.Receive("Lovedones", function()
 		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
 			lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
             lovedones[3]:ChatPrint("You are now in Team " .. tostring(lovedones[1]:GetTeam()))
+			PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick().." is now also in on it.")
 		end
 		SendFullStateUpdate()
 		net.Start("inLove")
