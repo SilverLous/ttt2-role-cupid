@@ -37,7 +37,6 @@ SWEP.Secondary.Ammo = "none"
 SWEP.Secondary.Delay = 0.1
 
 SWEP.NoSights = true
-SWEP.lovedOnesArmor = {}
 function SWEP:CreateGUI()
 	if CLIENT then
 		local ply = LocalPlayer()
@@ -96,15 +95,16 @@ function SWEP:CreateGUI()
 		self.GUI = Panel
 
 		function FinishButton:DoClick()
+			lovedOnesArmor = {}
 			if NameComboBox:GetSelected()==nil or NameComboBox2:GetSelected()==nil then return true end	
 			if NameComboBox:GetSelected()== NameComboBox2:GetSelected() then return true end
 			for i = 1, #plys do
-				if plys[i]:Name() == NameComboBox:GetSelected() then self.lovedOnesArmor[1]=plys[i] end
-				if plys[i]:Name() == NameComboBox2:GetSelected() then self.lovedOnesArmor[2]=plys[i] end				
+				if plys[i]:Name() == NameComboBox:GetSelected() then lovedOnesArmor[1]=plys[i] end
+				if plys[i]:Name() == NameComboBox2:GetSelected() then lovedOnesArmor[2]=plys[i] end				
 			end
-			self.lovedOnesArmor[3] = LocalPlayer()
+			lovedOnesArmor[3] = LocalPlayer()
 			net.Start("Lovedones")
-				net.WriteTable(self.lovedOnesArmor)
+				net.WriteTable(lovedOnesArmor)
 			net.SendToServer()
 			Panel:Close()
 		end
@@ -112,7 +112,7 @@ function SWEP:CreateGUI()
 end
 
 function SWEP:PrimaryAttack()
-	if (not self.GUI or not self.GUI:IsValid()) && table.IsEmpty(self.lovedOnesArmor) then
+	if (not self.GUI or not self.GUI:IsValid()) then
 		self:CreateGUI()
 	end
 	self.ReloadingTime = CurTime() + 0.2

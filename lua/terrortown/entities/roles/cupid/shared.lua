@@ -28,11 +28,12 @@ function ROLE:PreInitialize()
 	}
 end
 
-roles.InitCustomTeam(ROLE.name, { -- this creates the var "TEAM_CUPID"
+roles.InitCustomTeam("Lover", { -- this creates the var "TEAM_CUPID"
 		icon = "vgui/ttt/dynamic/roles/icon_lov",
 		color = Color(255, 20, 147, 255)
 })
 
+-- roles.InitCustomTeam("Lovers", { icon = "vgui/ttt/dynamic/roles/icon_lov", color = Color(255, 20, 147, 255) })
 if SERVER then
 	-- Give Loadout on respawn and rolechange
 	function ROLE:GiveRoleLoadout(ply, isRoleChange)
