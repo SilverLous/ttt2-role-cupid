@@ -81,8 +81,11 @@ function SWEP:CreateGUI()
 		NameComboBox2:SetValue("Choose your second subject")
 
 		for i = 1, #plys do
-			NameComboBox:AddChoice(plys[i]:Name(), plys[i])
-			NameComboBox2:AddChoice(plys[i]:Name(), plys[i])
+			if plys[i]:GetRole()!=ROLE_DETECTIVE then
+
+				NameComboBox:AddChoice(plys[i]:Name(), plys[i])
+				NameComboBox2:AddChoice(plys[i]:Name(), plys[i])
+			end
 		end
 
 		local FinishButton = vgui.Create("DButton", Panel)

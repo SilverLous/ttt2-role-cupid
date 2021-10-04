@@ -47,34 +47,46 @@ SWEP.lover1=""
 function SWEP:PrimaryAttack()
 	trace = self.Owner:GetEyeTrace().Entity
 	if IsValid(trace) && IsPlayer(trace) then
-		if self.lover1=="" then
-			self.lover1 = trace
-			tempOwner =self.Owner
-			if CLIENT && LocalPlayer()==tempOwner then 
-				LocalPlayer():GetActiveWeapon():ShootEffects()
-				LocalPlayer():GetActiveWeapon():ShootBullet(0,10, 1)
+		if trace:GetRole() == ROLE_DETECTIVE then	
+			if CLIENT then		
 				EPOP:AddMessage(
 					{
-					text = LANG.GetTranslation("crossBow_title")..self.lover1:Nick().."!",
+					text = LANG.GetTranslation("detectives_not_allowed"),
 					color = Color(255, 20, 147, 255)
 					},
-				LANG.GetTranslation("crossBow_text"),
-				6
-				)
-				if GetConVar("ttt_cupid_forced_selflove"):GetBool() then
+					"",
+					6)		
+			end
+		else
+			if self.lover1=="" then
+				self.lover1 = trace
+				tempOwner =self.Owner
+				if CLIENT && LocalPlayer()==tempOwner then 
+					LocalPlayer():GetActiveWeapon():ShootEffects()
+					LocalPlayer():GetActiveWeapon():ShootBullet(0,10, 1)
+					EPOP:AddMessage(
+						{
+						text = LANG.GetTranslation("crossBow_title")..self.lover1:Nick().."!",
+						color = Color(255, 20, 147, 255)
+						},
+					LANG.GetTranslation("crossBow_text"),
+					6
+					)
+					if GetConVar("ttt_cupid_forced_selflove"):GetBool() then
+						net.Start("Lovedones")
+							net.WriteTable({tempOwner,self.lover1,tempOwner})
+						net.SendToServer()
+					end
+				end
+				self.CanAimSelf = true
+			else
+				if self.lover1 ~= trace && CLIENT && LocalPlayer()==tempOwner then
+					LocalPlayer():GetActiveWeapon():ShootEffects()
+					LocalPlayer():GetActiveWeapon():ShootBullet(0,10, 1)
 					net.Start("Lovedones")
-						net.WriteTable({tempOwner,self.lover1,tempOwner})
+						net.WriteTable({trace,self.lover1,tempOwner})
 					net.SendToServer()
 				end
-			end
-			self.CanAimSelf = true
-		else
-			if self.lover1 ~= trace && CLIENT && LocalPlayer()==tempOwner then
-				LocalPlayer():GetActiveWeapon():ShootEffects()
-				LocalPlayer():GetActiveWeapon():ShootBullet(0,10, 1)
-				net.Start("Lovedones")
-					net.WriteTable({trace,self.lover1,tempOwner})
-				net.SendToServer()
 			end
 		end
 
