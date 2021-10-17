@@ -53,22 +53,23 @@ net.Receive("Lovedones", function()
 			lovedones[3]:StripWeapon("weapon_ttt2_cupidscrossbow")
 			lovedones[3]:StripWeapon("weapon_ttt2_cupidsbow")
 		end
-    else				
+    else	
+		team_update_mesg =""
+		if CLIENT then		
+			local team_update_mesg = LANG.GetTranslation("team_update")	
+		end
         if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
             lovedones[1]:UpdateTeam(TEAM_LOVER)
-            lovedones[1]:ChatPrint("You are now in Team Lovers")
             lovedones[2]:UpdateTeam(TEAM_LOVER)
-            lovedones[2]:ChatPrint("You are now in Team Lovers")
 			PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
             
             if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
                 lovedones[3]:UpdateTeam(TEAM_LOVER)
-				lovedones[3]:ChatPrint("You are now in Team Lovers")
             end            
 		end
 		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
 			lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
-            lovedones[3]:ChatPrint("You are now in Team " .. tostring(lovedones[1]:GetTeam()))
+            lovedones[3]:ChatPrint(team_update_mesg .. tostring(lovedones[3]:GetTeam()))
 			PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick().." is now also in on it.")
 		end
 		SendFullStateUpdate()

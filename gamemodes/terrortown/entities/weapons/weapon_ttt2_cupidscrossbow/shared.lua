@@ -47,11 +47,12 @@ SWEP.lover1=""
 function SWEP:PrimaryAttack()
 	trace = self.Owner:GetEyeTrace().Entity
 	if IsValid(trace) && IsPlayer(trace) then
-		if trace:GetRole() == ROLE_DETECTIVE then	
+		if trace:GetSubRoleData().isPublicRole then	
+			local role_name = trace:GetSubRoleData().name
 			if CLIENT then		
 				EPOP:AddMessage(
 					{
-					text = LANG.GetTranslation("detectives_not_allowed"),
+					text = role_name:sub(1,1):upper()..role_name:sub(2) .. LANG.GetTranslation("detectives_not_allowed"),
 					color = Color(255, 20, 147, 255)
 					},
 					"",

@@ -81,7 +81,7 @@ function SWEP:CreateGUI()
 		NameComboBox2:SetValue("Choose your second subject")
 
 		for i = 1, #plys do
-			if plys[i]:GetRole()!=ROLE_DETECTIVE then
+			if not plys[i]:GetSubRoleData().isPublicRole then
 
 				NameComboBox:AddChoice(plys[i]:Name(), plys[i])
 				NameComboBox2:AddChoice(plys[i]:Name(), plys[i])
@@ -122,6 +122,13 @@ function SWEP:PrimaryAttack()
 	
 	return true
 end
+
+
+function SWEP:SecondaryAttack()	
+	for k,item in pairs(GetRoles()) do for i,item2 in ipairs(item) do print(item2.isPublicRole) end print(item) print(k) end
+end
+
+
 function SWEP:OnDrop()
 	self:Remove()
 end
