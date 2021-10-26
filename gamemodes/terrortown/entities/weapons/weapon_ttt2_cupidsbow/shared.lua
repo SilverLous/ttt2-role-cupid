@@ -124,11 +124,6 @@ function SWEP:PrimaryAttack()
 end
 
 
-function SWEP:SecondaryAttack()	
-	for k,item in pairs(GetRoles()) do for i,item2 in ipairs(item) do print(item2.isPublicRole) end print(item) print(k) end
-end
-
-
 function SWEP:OnDrop()
 	self:Remove()
 end

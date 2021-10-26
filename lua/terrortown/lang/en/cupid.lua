@@ -5,7 +5,7 @@ L[CUPID.name] = "Cupid"
 L["info_popup_" .. CUPID.name] = [[You are Cupid!
 You can use your crossbow to hit two players to let them fall in love!
 The bolt is invisible to non-godly beings.
-The crossbow will become useless after someone died so choose quickly!
+Love can only stay in the air so long, so choose quickly!
 You can also target yourself, which would be weird...]]
 L["body_found_" .. CUPID.abbr] = "This was Cupid."
 L["search_role_" .. CUPID.abbr] = "This person was Cupid!"

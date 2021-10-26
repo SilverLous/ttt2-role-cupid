@@ -6,7 +6,7 @@ L["info_popup_" .. CUPID.name] = [[Du bist Amor!
 Du kannst deinen Bogen benutzen um zwei Spieler dazu zu bringen sich unsterblich zu verlieben!
 Wenn der eine stirbt, stirbt der andere mit. Liebe ist aufregend!
 Keine Sorge diese Kräfte sind schwer als sterblicher zu bemerken.
-Jedoch verlassen dich deine Kräfte falls jemand schon gestorben ist!
+Liebe verfliegt sehr schnell also wähle früh aus!
 Du kannst dich auc selbst mit auswählen.(Wenn das dein Ding ist)]]
 L["body_found_" .. CUPID.abbr] = "Er war Amor."
 L["search_role_" .. CUPID.abbr] = "Diese Person war Amor!"

@@ -1,9 +1,7 @@
 
 lovedones = {}
-someoneDied = false
 
 hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
-	someoneDied = true	
 	if SERVER then
 		if lovedones[1] == player and player.inLove then
 			LANG.Msg(player, "deathPopup_title")
@@ -24,8 +22,25 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 	end
 end)	
 
+hook.Add("TTTBeginRound","timerOnWEapon",function()
+	if SERVER then
+		timer.Create("remove_Cupid_weapon", GetConVar("ttt_cupid_timelimit_magic"):GetInt(),1, function()
+			for _,ply in pairs(player.GetAll()) do
+				if ply:GetRole() == ROLE_CUPID and ply:Alive() then
+					if GetConVar("ttt_cupid_old_weapon"):GetBool() then
+						ply:StripWeapon("weapon_ttt2_cupidsbow")
+					else
+						ply:StripWeapon("weapon_ttt2_cupidscrossbow")
+					end
+				end
+			end
+		end)
+	end
+end)
+
+
 hook.Add("TTTPrepareRound","reseeeettime",function()	
-	someoneDied = false
+	timer.Remove("remove_Cupid_weapon")
 	lover1 = ""
 	if lovedones[1]!=nil then
 		lovedones[1].inLove = false
@@ -47,71 +62,65 @@ end)
 
 
 net.Receive("Lovedones", function()	
-	lovedones = net.ReadTable()
-	if someoneDied then		
-		if SERVER then
-			lovedones[3]:StripWeapon("weapon_ttt2_cupidscrossbow")
-			lovedones[3]:StripWeapon("weapon_ttt2_cupidsbow")
-		end
-    else	
-		team_update_mesg =""
-		if CLIENT then		
-			local team_update_mesg = LANG.GetTranslation("team_update")	
-		end
-        if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
-            lovedones[1]:UpdateTeam(TEAM_LOVER)
-            lovedones[2]:UpdateTeam(TEAM_LOVER)
-			PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
-            
-            if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
-                lovedones[3]:UpdateTeam(TEAM_LOVER)
-            end            
-		end
-		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
-			lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
-            lovedones[3]:ChatPrint(team_update_mesg .. tostring(lovedones[3]:GetTeam()))
-			PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick().." is now also in on it.")
-		end
-		SendFullStateUpdate()
-		net.Start("inLove")
-			net.WriteTable({lovedones[1],lovedones[2],lovedones[3]})
-		net.Send({lovedones[1],lovedones[2],lovedones[3]})
-		lovedones[1].inLove = true
-		lovedones[2].inLove = true
-		if SERVER then
-			if GetConVar("ttt_cupid_damage_split_enabled"):GetBool()==true then
-				hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
-					if GetRoundState() ~= ROUND_ACTIVE then return end
-					local attacker = dmginfo:GetAttacker()
-					--if not IsValid(attacker) or not attacker:IsPlayer() then return end				
-					local damage = dmginfo:GetDamage()
-					if ply.inLove then
-						if ( not m_bApplyingDamage) then                            
-							m_bApplyingDamage = true
-							dmginfo:SetDamage(dmginfo:GetDamage() / 2)
-							lovedones[1]:TakeDamageInfo( dmginfo )
-							lovedones[2]:TakeDamageInfo( dmginfo )
-							dmginfo:ScaleDamage(0)
-							m_bApplyingDamage = false
-							return
-                        end
-					end
-				end)			
-				hook.Add("Tick", "Lovers_Heal_Share",function()
-					if CurTime()%1 == 0 && lovedones[1]:Alive() && lovedones[2]:Alive() && lovedones[1]:Health() != lovedones[2]:Health() then 
-						healthDiff = lovedones[1]:Health()-lovedones[2]:Health()
-						if healthDiff>0 then
-							lovedones[2]:SetHealth(lovedones[1]:Health())
-						else
-							lovedones[1]:SetHealth(lovedones[2]:Health())
-						end
-					end
-				end)
-			end
-			lovedones[3]:StripWeapon("weapon_ttt2_cupidscrossbow")
-			lovedones[3]:StripWeapon("weapon_ttt2_cupidsbow")
-		end
+	lovedones = net.ReadTable()	
+	team_update_mesg =""
+	if CLIENT then		
+		local team_update_mesg = LANG.GetTranslation("team_update")	
 	end
+	if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
+		lovedones[1]:UpdateTeam(TEAM_LOVER)
+		lovedones[2]:UpdateTeam(TEAM_LOVER)
+		PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
+		
+		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
+			lovedones[3]:UpdateTeam(TEAM_LOVER)
+		end            
+	end
+	if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
+		lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
+		lovedones[3]:ChatPrint(team_update_mesg .. tostring(lovedones[3]:GetTeam()))
+		PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick().." is now also in on it.")
+	end
+	SendFullStateUpdate()
+	net.Start("inLove")
+		net.WriteTable({lovedones[1],lovedones[2],lovedones[3]})
+	net.Send({lovedones[1],lovedones[2],lovedones[3]})
+	lovedones[1].inLove = true
+	lovedones[2].inLove = true
+	if SERVER then
+		if GetConVar("ttt_cupid_damage_split_enabled"):GetBool()==true then
+			hook.Add('EntityTakeDamage', 'LoversDamageScaling', function(ply, dmginfo)
+				if GetRoundState() ~= ROUND_ACTIVE then return end
+				local attacker = dmginfo:GetAttacker()
+				--if not IsValid(attacker) or not attacker:IsPlayer() then return end				
+				local damage = dmginfo:GetDamage()
+				if ply.inLove then
+					if ( not m_bApplyingDamage) then                            
+						m_bApplyingDamage = true
+						dmginfo:SetDamage(dmginfo:GetDamage() / 2)
+						lovedones[1]:TakeDamageInfo( dmginfo )
+						lovedones[2]:TakeDamageInfo( dmginfo )
+						dmginfo:ScaleDamage(0)
+						m_bApplyingDamage = false
+						return
+					end
+				end
+			end)			
+			hook.Add("Tick", "Lovers_Heal_Share",function()
+				if CurTime()%1 == 0 && lovedones[1]:Alive() && lovedones[2]:Alive() && lovedones[1]:Health() != lovedones[2]:Health() then 
+					healthDiff = lovedones[1]:Health()-lovedones[2]:Health()
+					if healthDiff>0 then
+						lovedones[2]:SetHealth(lovedones[1]:Health())
+					else
+						lovedones[1]:SetHealth(lovedones[2]:Health())
+					end
+				end
+			end)
+		end
+		lovedones[3]:StripWeapon("weapon_ttt2_cupidscrossbow")
+		lovedones[3]:StripWeapon("weapon_ttt2_cupidsbow")
+	end
+	
 
 end)
 net.Receive("inLove", function()
