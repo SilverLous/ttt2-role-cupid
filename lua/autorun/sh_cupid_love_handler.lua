@@ -70,12 +70,13 @@ net.Receive("Lovedones", function()
 	if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
 		lovedones[1]:UpdateTeam(TEAM_LOVER)
 		lovedones[2]:UpdateTeam(TEAM_LOVER)
-		PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
 		
 		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
 			lovedones[3]:UpdateTeam(TEAM_LOVER)
 		end            
 	end
+	PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
+	
 	if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
 		lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
 		lovedones[3]:ChatPrint(team_update_mesg .. tostring(lovedones[3]:GetTeam()))
