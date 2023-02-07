@@ -4,7 +4,7 @@ L = LANG.GetLanguageTableReference("en")
 L[CUPID.name] = "Cupid"
 L["info_popup_" .. CUPID.name] = [[You are Cupid!
 You can use your crossbow to hit two players to let them fall in love!
-The bolt is invisible to non-godly beings.
+The bolt is invisible to mortals.
 Love can only stay in the air so long, so choose quickly!
 You can also target yourself, which would be weird...]]
 L["body_found_" .. CUPID.abbr] = "This was Cupid."
@@ -24,5 +24,5 @@ L["deathPopup_title"] = "Your loved one died!"
 L["deathPopup_text"] = "You will join them in 5 seconds"
 L["hoverLove"] = "Your one and only"
 L["detectives_not_allowed"] = "Detectives are incapable of feeling love"
-L["win_" ..CUPID.name .."s"] = "The Lovers have won!"
+L["win_lovers"] = "Love wins!"
 L["team_update"] = "You are now in Team "
