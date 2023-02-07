@@ -2,6 +2,8 @@ L = LANG.GetLanguageTableReference("de")
 
 -- GENERAL ROLE LANGUAGE STRINGS
 L[CUPID.name] = "Amor"
+
+L["lovers"] = "Team Liebende"
 L["info_popup_" .. CUPID.name] = [[Du bist Amor!
 Du kannst deinen Bogen benutzen, um zwei Spieler dazu zu bringen, sich unsterblich zu verlieben!
 Wenn der eine stirbt, stirbt der andere mit. Liebe ist aufregend!
@@ -26,4 +28,4 @@ L["hoverLove"] = "Dein ein und alles"
 L["detectives_not_allowed"] = " kann keine Liebe empfinden, traurig."
 L["win_" ..CUPID.name .."s"] = "Die Liebenden haben gewonnen!"
 L["win_lovers"] = "Die Liebe hat gewonnen!"
-L["team_update"] = "Ihr beiden seid jetzt im Team "
+L["team_update"] = "Ihr seid jetzt im Team "

@@ -2,6 +2,9 @@ L = LANG.GetLanguageTableReference("en")
 
 -- GENERAL ROLE LANGUAGE STRINGS
 L[CUPID.name] = "Cupid"
+
+L["lovers"] = "Team Lovers"
+
 L["info_popup_" .. CUPID.name] = [[You are Cupid!
 You can use your crossbow to hit two players to let them fall in love!
 The bolt is invisible to mortals.
