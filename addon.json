@@ -2,5 +2,5 @@
 "title" : "[TTT2] Cupid [Role]",
 "type" : "gamemode",
 "tags" : "fun",
-"ignore" : ["*.psd", "*.vcproj", "*.svn*","git/*","*.md"]
+"ignore" : ["*.psd", "*.vcproj", "*.svn*","git/*","*.md",".gitignore"]
 }

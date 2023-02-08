@@ -8,7 +8,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[2])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(200,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(999,killer,self) end
 			end)
 		end
 		if lovedones[2] == player and player.inLove then
@@ -16,7 +16,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[1])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(200,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(999,killer,self) end
 			end)
 		end
 	end
@@ -129,7 +129,7 @@ net.Receive("inLove", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if  LocalPlayer() == lovedones[1] then Ply=lovedones[2] else Ply=lovedones[1] end
-		if LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2] then
+		if (LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2]) and LocalPlayer():Alive() then
 			if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
 				EPOP:AddMessage(
 					{
@@ -179,7 +179,7 @@ net.Receive("inLove", function()
 end)
 
 net.Receive("deathPopup", function()
-	if CLIENT then
+	if CLIENT and LocalPlayer():Alive() then
 
 		deathtimer=CurTime()
 		EPOP:AddMessage(
