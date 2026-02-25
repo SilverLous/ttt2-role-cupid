@@ -8,7 +8,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[2])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(999,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(200,killer,self) end
 			end)
 		end
 		if lovedones[2] == player and player.inLove then
@@ -16,7 +16,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[1])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(999,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(200,killer,self) end
 			end)
 		end
 	end
@@ -35,6 +35,13 @@ hook.Add("TTTBeginRound","timerOnWEapon",function()
 				end
 			end
 		end)
+
+		/*hook.Add( "HUDPaint", "TeamNewsFlash", function()
+			
+			surface.SetDrawColor( TEAMS[LocalPlayer():GetTeam()].color )
+			print(LocalPlayer(),  )
+			surface.DrawRect( 0, 0, 150, 150 )
+		end )*/
 	end
 end)
 
@@ -57,6 +64,8 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	hook.Remove("Tick", "Lovers_Heal_Share")
 	--self.CanAimSelf = false
 	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
+	hook.Remove("HUDPaint", "WikiTeamGetColorExample")
+	
 end)
 
 
@@ -123,13 +132,21 @@ net.Receive("Lovedones", function()
 	
 
 end)
+
+local triangle = {
+	{ x = 100, y = 200 },
+	{ x = 150, y = 100 },
+	{ x = 200, y = 200 }
+}
+
+
 net.Receive("inLove", function()
 	if CLIENT then
 		lovedones = net.ReadTable()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if  LocalPlayer() == lovedones[1] then Ply=lovedones[2] else Ply=lovedones[1] end
-		if (LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2]) and LocalPlayer():Alive() then
+		if LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2] then
 			if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
 				EPOP:AddMessage(
 					{
@@ -174,12 +191,51 @@ net.Receive("inLove", function()
 					Color(255, 20, 147, 255)
 				)
 			end)
+			
+			local smokeparticles = {
+				Model("particle/particle_smokegrenade"),
+				Model("particle/particle_noisesphere")
+			}
+			local center = LocalPlayer():GetPos()
+			local em = ParticleEmitter(center)
+
+			local r = 50 
+			for i=1, 80 do
+				local prpos = VectorRand() * r
+				prpos.z = prpos.z + 64
+				local p = em:Add(table.Random(smokeparticles), center + prpos)
+				if p then
+					local gray = math.random(100, 200)
+					local c = TEAMS[LocalPlayer():GetTeam()].color
+					p:SetColor(c.r, c.g, c.b)
+					p:SetStartAlpha(255)
+					p:SetEndAlpha(220)
+					p:SetVelocity(VectorRand() * math.Rand(1300, 1700))
+					p:SetLifeTime(0)
+
+					p:SetDieTime(math.Rand(1, 2))
+
+					p:SetStartSize(math.random(100, 150))
+					p:SetEndSize(0)
+					p:SetRoll(math.random(-180, 180))
+					p:SetRollDelta(math.Rand(-0.1, 0.1))
+					p:SetAirResistance(600)
+
+					p:SetCollide(false)
+					p:SetBounce(0.4)
+
+					p:SetLighting(false)
+				end
+			end
+
 		end
 	end
 end)
 
+
+
 net.Receive("deathPopup", function()
-	if CLIENT and LocalPlayer():Alive() then
+	if CLIENT then
 
 		deathtimer=CurTime()
 		EPOP:AddMessage(
