@@ -3,6 +3,7 @@ if SERVER then
 	util.AddNetworkString( "Lovedones" )
 	util.AddNetworkString("inLove")
 	util.AddNetworkString("deathPopup")
+	util.AddNetworkString("betrayedTraitor")
 	--AddCSLuaFile("Armor.lua")
 else
 	SWEP.PrintName = "Cupid's bow"

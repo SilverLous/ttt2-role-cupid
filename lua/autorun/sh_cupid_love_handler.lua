@@ -8,7 +8,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[2])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(200,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[2]:TakeDamage(999,killer,self) end
 			end)
 		end
 		if lovedones[2] == player and player.inLove then
@@ -16,7 +16,7 @@ hook.Add("PlayerDeath", "loveSick", function(player,item,killer)
 			net.Start("deathPopup")
 			net.Send(lovedones[1])
 			timer.Simple(5, function()
-				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(200,killer,self) end
+				if !table.IsEmpty(lovedones) then lovedones[1]:TakeDamage(999,killer,self) end
 			end)
 		end
 	end
@@ -65,10 +65,24 @@ hook.Add("TTTPrepareRound","reseeeettime",function()
 	--self.CanAimSelf = false
 	if GetConVar("ttt_cupid_damage_split_enabled")==1 then hook.Remove('EntityTakeDamage', 'LoversDamageScaling') end
 	hook.Remove("HUDPaint", "WikiTeamGetColorExample")
-	
+
 end)
 
 
+net.Receive("betrayedTraitor", function()
+	if CLIENT  then
+		local cPlayer = net.ReadPlayer()
+		EPOP:AddMessage(
+			{
+			text = LANG.GetTranslation("traitor_betrayed"),
+			color = Color(255, 20, 20)
+			},
+		cPlayer:Nick() .. LANG.GetTranslation("traitor_betrayed_desc"),20
+		)
+		
+	end
+
+end)
 
 net.Receive("Lovedones", function()	
 	lovedones = net.ReadTable()	
@@ -77,18 +91,35 @@ net.Receive("Lovedones", function()
 		local team_update_mesg = LANG.GetTranslation("team_update")	
 	end
 	if (lovedones[1]:GetTeam() != lovedones[2]:GetTeam() or GetConVar("ttt_cupid_lovers_force_own_team"):GetBool() ) then
+		local bfTraitor = lovedones[1]
+		if lovedones[1]:GetTeam() == TEAM_TRAITOR then
+			bfTraitor = lovedones[1] 
+		elseif lovedones[2]:GetTeam() == TEAM_TRAITOR then
+			bfTraitor = lovedones[2] 
+		end
 		lovedones[1]:UpdateTeam(TEAM_LOVER)
-		lovedones[2]:UpdateTeam(TEAM_LOVER)
+		lovedones[2]:UpdateTeam(TEAM_LOVER)		
 		PrintMessage(HUD_PRINTCONSOLE, lovedones[1]:Nick().." is now in love with "..lovedones[2]:Nick()..".")
 		
 		if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() then                      
 			lovedones[3]:UpdateTeam(TEAM_LOVER)
-		end            
+		end
+		local otherTraitors = {}
+
+		for k,v in next, player.GetAll() do
+
+			if  v:GetTeam() == TEAM_TRAITOR then
+				table.insert(otherTraitors, v)
+			end
+		end
+		net.Start("betrayedTraitor")
+			net.WritePlayer(bfTraitor)
+		net.Send(otherTraitors)
 	end
 	if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && lovedones[1]:GetTeam() ~= lovedones[3]:GetTeam() then   
 		lovedones[3]:UpdateTeam(lovedones[1]:GetTeam())
 		lovedones[3]:ChatPrint(team_update_mesg .. tostring(lovedones[3]:GetTeam()))
-		PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick().." is now also in on it.")
+		PrintMessage(HUD_PRINTCONSOLE, lovedones[3]:Nick() .. " is now also in on it.")
 	end
 	SendFullStateUpdate()
 	net.Start("inLove")
@@ -116,7 +147,7 @@ net.Receive("Lovedones", function()
 				end
 			end)			
 			hook.Add("Tick", "Lovers_Heal_Share",function()
-				if CurTime()%1 == 0 && lovedones[1]:Alive() && lovedones[2]:Alive() && lovedones[1]:Health() != lovedones[2]:Health() then 
+				if CurTime()%1 == 0 && table.Count(lovedones) > 1 && lovedones[1]:Alive() && lovedones[2]:Alive() && lovedones[1]:Health() != lovedones[2]:Health() then 
 					healthDiff = lovedones[1]:Health()-lovedones[2]:Health()
 					if healthDiff>0 then
 						lovedones[2]:SetHealth(lovedones[1]:Health())
@@ -146,7 +177,7 @@ net.Receive("inLove", function()
 		lovedones[1].inLove = true
 		lovedones[2].inLove = true
 		if  LocalPlayer() == lovedones[1] then Ply=lovedones[2] else Ply=lovedones[1] end
-		if LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2] then
+		if (LocalPlayer() == lovedones[1] or LocalPlayer() == lovedones[2]) and LocalPlayer():Alive() then
 			if GetConVar("ttt_cupid_joins_team_lovers"):GetBool() && LocalPlayer() ~= lovedones[1] && LocalPlayer() ~= lovedones[2] && LocalPlayer() == lovedones[3] then
 				EPOP:AddMessage(
 					{
@@ -232,10 +263,8 @@ net.Receive("inLove", function()
 	end
 end)
 
-
-
 net.Receive("deathPopup", function()
-	if CLIENT then
+	if CLIENT and LocalPlayer():Alive() then
 
 		deathtimer=CurTime()
 		EPOP:AddMessage(

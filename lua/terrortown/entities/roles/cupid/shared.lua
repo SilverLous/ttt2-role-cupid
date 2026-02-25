@@ -28,7 +28,7 @@ function ROLE:PreInitialize()
 	}
 end
 
-roles.InitCustomTeam("Lover", { -- this creates the var "TEAM_CUPID"
+roles.InitCustomTeam("LOVER", { -- this creates the var "TEAM_CUPID"
 		icon = "vgui/ttt/dynamic/roles/icon_lov",
 		color = Color(255, 20, 147, 255)
 })
